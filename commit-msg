@@ -1,0 +1,26 @@
+#!/bin/sh
+
+BRANCH=$(git symbolic-ref HEAD --short)
+NOW=$(date +%s)
+ONEMONTHAGO=$(date -v1m +%s)
+
+if [ -n "$BRANCH" ]; then
+
+    if [ "$BRANCH" = "master" ]; then
+      exit 0
+    fi;
+
+    # git reflog: list (local) reflog entries in the last month
+    # grep1: we don't specify the from branch
+    # grep2: make sure we're checking out our target
+    # tail: get the last/older occurence
+    # sed: strip out the timestamp
+    AGE=$(git reflog show --date=unix --since=$ONEMONTHAGO --format="%gd %gs" \
+        | grep "checkout: moving from " \
+        | grep " to $BRANCH" \
+        | tail -1 \
+        | sed -r 's/HEAD@{([0-9]+)}.*/\1/g')
+
+    # include the branch name so the post-merge hook is a little safer
+    echo "\ntime_branch_created $BRANCH $AGE" >> "$1"
+fi
