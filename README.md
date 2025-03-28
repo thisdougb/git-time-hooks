@@ -23,6 +23,9 @@ I'm not sure of the best way to version pin these git hooks, while making them e
 
 ```
 $ cat Makefile 
+GIT_TIME_HOOKS= \
+	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/commit-msg \
+	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/pre-push
 
 githooks:
         @for i in $(shell ls -1 .githooks); do \
