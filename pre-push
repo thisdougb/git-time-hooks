@@ -74,4 +74,5 @@ git tag -a $TAG_NAME -m "$TAG_MSG"
 echo [$HOOKNAME] tag added: $TAG_NAME $TAG_MSG
 
 git push origin $TAG_NAME
-echo [$HOOKNAME] tag added: $TAG_NAME $TAG_MSG
+echo [$HOOKNAME] tag pushed: $TAG_NAME $TAG_MSG
+
