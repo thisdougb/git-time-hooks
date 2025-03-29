@@ -67,7 +67,7 @@ fi;
 NOW=$(date +%s)
 BRANCH_AGE=$((NOW-OLDEST_BRANCH_TIMESTAMP))
 
-TAG_NAME=time_${MERGED_BRANCH}_$(git rev-parse --short HEAD)
+TAG_NAME=time_$(git rev-parse --short HEAD)_${MERGED_BRANCH}
 TAG_MSG=$(printf '%dd:%dh:%dm secs=%d' $((BRANCH_AGE/86400)) $((BRANCH_AGE%86400/3600)) $((BRANCH_AGE%3600/60)) $BRANCH_AGE)
 
 git tag -a $TAG_NAME -m "$TAG_MSG"
