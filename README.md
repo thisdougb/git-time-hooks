@@ -51,6 +51,6 @@ installing git hook https://raw.githubusercontent.com/thisdougb/git-time-hooks/m
 Refactored to make the hooks add time data into the merge commit messages.
 This is cleaner and a little bit simpler.
 
-#### 28 Mar 2025
+#### 28 Mar 2025
 
 Initial git hooks, creating tags to store the time data.
