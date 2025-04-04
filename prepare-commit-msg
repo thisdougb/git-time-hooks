@@ -1,0 +1,86 @@
+#!/bin/sh
+
+# https://github.com/thisdougb/git-time-hooks
+#
+# This hook runs after the partner commit-msg hook. It works out
+# the age of the merging branch, and adds that as a line in the
+# merge commit message.
+#
+# The echo statements are mostly commented out, but can be enabled
+# for debug purposes.
+
+HOOKNAME=prepare-commit-msg
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+case "$COMMIT_SOURCE" in
+    message)
+        # ignore a regular commit
+        exit 0 ;;
+
+    merge)
+        #echo "[$HOOKNAME] detect merge commit"
+
+        # a merge commit uses the MERGE_MSG file as the commit message template,
+        # initiall it contains the merging branch name on the first line.
+        COMMIT_MSG_FILE=".git/MERGE_MSG" 
+        MERGED_BRANCH=$(head -1 "${COMMIT_MSG_FILE}" \
+            | sed "s/Merge branch '\(.*\)'.*/\1/g") ;;
+
+    squash)
+        #echo "[$HOOKNAME] detect squash commit"
+
+        # the commit-msg hook should have added branched_created line per commit,
+        # and that contains the merging branch name.
+        MERGED_BRANCH=$(cat .git/SQUASH_MSG \
+            | grep branch_created \
+            | awk '{print $2}' \
+            | sort \
+            | uniq \
+            | head -1) ;;
+    *)
+        # print a warning that there's a commit source we haven't catered for.
+        echo "[$HOOKNAME] unknown commit source: $COMMIT_SOURCE"
+        exit 0 ;;
+esac
+
+# list commits that were merged feature branch, by comparing with remote.
+CURRENT_REMOTE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# double check and exit to avoid mess
+if [ "$MERGED_BRANCH" = "" ]; then
+  #echo [$HOOKNAME] did not detect the merged branch
+  exit
+fi;
+
+#echo "[$HOOKNAME] detected merged branch: $MERGED_BRANCH."
+
+# find oldest timestamp, because checkout time is local to user committing,
+# Alice may have started working on her copy of the branch before Bob starts
+# on his.
+OLDEST_BRANCH_TIMESTAMP=$(git log "${CURRENT_BRANCH}..${MERGED_BRANCH}" \
+    | grep "time_branch_created $MERGED_BRANCH" \
+    | grep -v "$CURRENT_BRANCH" \
+    | awk '{print $3}' \
+    | sort \
+    | head -1)
+
+if [ "$OLDEST_BRANCH_TIMESTAMP" = "" ]; then
+    exit
+fi;
+
+NOW=$(date +%s)
+BRANCH_AGE=$((NOW-OLDEST_BRANCH_TIMESTAMP))
+
+BRANCH_AGE_MSG=$(printf 'Time spent on %s: %dd:%dh:%dm secs=%d' \
+    $MERGED_BRANCH \
+    $((BRANCH_AGE/86400)) \
+    $((BRANCH_AGE%86400/3600)) \
+    $((BRANCH_AGE%3600/60)) \
+    $BRANCH_AGE)
+
+echo >> "$COMMIT_MSG_FILE"
+echo "$BRANCH_AGE_MSG" >> "$COMMIT_MSG_FILE"
