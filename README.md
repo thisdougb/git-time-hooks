@@ -28,16 +28,17 @@ Or use a Makefile to automate the process.
 
 ```
 $ cat Makefile 
-GIT_TIME_HOOKS= \
-	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/commit-msg \
-	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/prepare-commit-msg
+HOOKS= \
+	   https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/commit-msg \
+	   https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/prepare-commit-msg
 
 githooks:
-        @for i in $(shell ls -1 .githooks); do \
-                echo "installing git hook $$i"; \
-                cp -f ".githooks/$$i" .git/hooks; \
-                chmod +x ".git/hooks/$$i"; \
-        done
+	@cd .git/hooks && \
+	for i in $(HOOKS); do \
+		echo "installing git hook $$i"; \
+		curl -sO $$i; \
+		chmod +x "`echo $$i | rev | cut -f1 -d'/' | rev`"; \
+	done
 
 $ make githooks
 installing git hook https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/commit-msg
