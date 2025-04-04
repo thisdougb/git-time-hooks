@@ -1,14 +1,27 @@
 #!/bin/sh
 
+# https://github.com/thisdougb/git-time-hooks
+#
+# This hook runs before the partner prepare-commit-msg hook. It
+# stamps each commit with the creation time of the current branch.
+
+HOOKNAME=commit-msg
+
+# dot delimited list of branches to ignore
+EXCLUDE_BRANCHES=".master.main."
+
 BRANCH=$(git symbolic-ref HEAD --short)
 NOW=$(date +%s)
 ONEMONTHAGO=$(date -v1m +%s)
 
 if [ -n "$BRANCH" ]; then
 
-    if [ "$BRANCH" = "master" ]; then
+    # a bit of a shell script hack
+    echo "$EXCLUDE_BRANCHES" | grep ".$BRANCH."
+    if [ $? = 0 ]; then
+        echo "[$HOOKNAME] ignoring branch $BRANCH, not adding branch timestamp"
       exit 0
-    fi;
+    fi
 
     # git reflog: list (local) reflog entries in the last month
     # grep1: we don't specify the from branch

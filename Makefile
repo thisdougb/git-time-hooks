@@ -6,7 +6,7 @@
 
 GIT_TIME_HOOKS= \
 	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/commit-msg \
-	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/pre-push
+	https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/prepare-commit-msg
 
 .PHONY: githooks
 githooks:
