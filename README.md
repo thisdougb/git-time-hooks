@@ -42,7 +42,7 @@ githooks:
 
 $ make githooks
 installing git hook https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/commit-msg
-installing git hook https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/pre-push
+installing git hook https://raw.githubusercontent.com/thisdougb/git-time-hooks/main/prepare-commit-msg
 ```
 
 ## Changelog
