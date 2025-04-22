@@ -23,6 +23,14 @@ if [ -n "$BRANCH" ]; then
       exit 0
     fi
 
+    # the reflog is created after the first commit is made. so avoid a spurious
+    # error with this check.
+    git reflog >/dev/null 2>&1
+    if [ $? != 0 ]; then
+        echo "[$HOOKNAME] reflog does not exist yet"
+      exit 0
+    fi
+
     # git reflog: list (local) reflog entries in the last month
     # grep1: we don't specify the from branch
     # grep2: make sure we're checking out our target
