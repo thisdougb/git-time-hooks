@@ -47,6 +47,10 @@ installing git hook https://raw.githubusercontent.com/thisdougb/git-time-hooks/m
 
 ## Changelog
 
+#### 22 Apr 2025
+
+A minor fix to catch a printed error from commit-msg when run on the very first repo commit, when reflog does not yet exist.
+
 #### 04 Apr 2025
 
 Refactored to make the hooks add time data into the merge commit messages.
