@@ -21,6 +21,13 @@ Date:   Fri Apr 4 10:36:37 2025 +0100
     Time spent on feat_githooks: 0d:0h:3m secs=194
 ```
 
+Here I can see how many days I've spent editing code on the webui component in the past month:
+
+```
+$ git log --since="1 month ago" | grep Time | grep webui | cut -f2 -d= | paste -s -d+ - | bc | paste -s -ds - | sed -e 's/$/\/60\/60\/24/g'  | bc
+4
+```
+
 ## Install
 
 You can simply copy the two hooks into `./git/hooks/` and make them executable.
