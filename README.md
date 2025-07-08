@@ -2,7 +2,7 @@
 
 A pair of git hooks to automatically track time spent in feature development.
 
-My blog post is [here](https://doocot.sh/blog/2025/03/28/time-tracking-with-git), which describes the motivation and how it works.
+My blog post is [here](https://doocot.sh/blog/2025/03/28/time-tracking-with-git.html), which describes the motivation and how it works.
 
 ## TL;DR
 
