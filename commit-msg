@@ -12,7 +12,7 @@ EXCLUDE_BRANCHES=".master.main."
 
 BRANCH=$(git symbolic-ref HEAD --short)
 NOW=$(date +%s)
-ONEMONTHAGO=$(date -v1m +%s)
+ONEMONTHAGO=$(date -v-1m +%s 2>/dev/null || date -d "1 month ago" +%s)
 
 if [ -n "$BRANCH" ]; then
 
