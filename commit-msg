@@ -12,6 +12,7 @@ EXCLUDE_BRANCHES=".master.main."
 
 BRANCH=$(git symbolic-ref HEAD --short)
 NOW=$(date +%s)
+# date options for compatibility on mac and linux
 ONEMONTHAGO=$(date -v-1m +%s 2>/dev/null || date -d "1 month ago" +%s)
 
 if [ -n "$BRANCH" ]; then
@@ -35,12 +36,12 @@ if [ -n "$BRANCH" ]; then
     # grep1: we don't specify the from branch
     # grep2: make sure we're checking out our target
     # tail: get the last/older occurence
-    # sed: strip out the timestamp
+    # sed: strip out the timestamp (basic POSIX regex for compatibility)
     AGE=$(git reflog show --date=unix --since=$ONEMONTHAGO --format="%gd %gs" \
-        | grep "checkout: moving from " \
-        | grep " to $BRANCH" \
-        | tail -1 \
-        | sed -r 's/HEAD@{([0-9]+)}.*/\1/g')
+          | grep "checkout: moving from " \
+          | grep " to $BRANCH" \
+          | tail -1 \
+          | sed 's/HEAD@{\([0-9]\+\)}.*/\1/g')
 
     # include the branch name so the post-merge hook is a little safer
     echo "\ntime_branch_created $BRANCH $AGE" >> "$1"
